@@ -275,18 +275,30 @@ class JetpackThankYouCard extends Component {
 	}
 
 	renderFeatures() {
-		let mappedFeatures;
-		if ( this.shouldRenderPlaceholders() ) {
-			mappedFeatures = this.renderFeaturePlaceholders();
-		} else {
-			mappedFeatures = this.getFeaturesWithStatus().map( this.renderFeature );
+		const { selectedSite } = this.props;
+
+		if ( selectedSite && ! selectedSite.canUpdateFiles ) {
+			return null;
 		}
 
-		return (
+		const mappedFeatures = this.shouldRenderPlaceholders()
+			? this.renderFeaturePlaceholders()
+			: this.getFeaturesWithStatus().map( this.renderFeature );
+		const features = (
 			<ul className="checkout-thank-you__jetpack-features">
 				{ mappedFeatures }
 			</ul>
 		);
+
+		if ( selectedSite && ! selectedSite.canManage() ) {
+			return (
+				<FeatureExample>
+					{ features }
+				</FeatureExample>
+			);
+		}
+
+		return features;
 	}
 
 	renderErrorNotice() {
@@ -312,6 +324,11 @@ class JetpackThankYouCard extends Component {
 	renderManageNotice() {
 		const { translate, selectedSite } = this.props;
 		const manageUrl = selectedSite.getRemoteManagementURL() + '&section=plugins-setup';
+
+		if ( ! selectedSite || selectedSite.canManage() ) {
+			return null;
+		}
+
 		return (
 			<Notice
 				className="checkout-thank-you__jetpack-manage-notice"
@@ -388,6 +405,11 @@ class JetpackThankYouCard extends Component {
 	}
 
 	renderAction() {
+		const { selectedSite } = this.props;
+		if ( ! selectedSite.canUpdateFiles ) {
+			return null;
+		}
+
 		const features = this.getFeaturesWithStatus() || [ '' ];
 		const completed = this.shouldRenderPlaceholders()
 			? 0
@@ -410,7 +432,6 @@ class JetpackThankYouCard extends Component {
 
 	render() {
 		const site = this.props.selectedSite;
-		const turnOnManage = site && ! site.canManage();
 
 		if ( ! site && this.props.isRequestingSites ) {
 			return (
@@ -422,14 +443,11 @@ class JetpackThankYouCard extends Component {
 
 		return (
 			<div className={ classNames( 'checkout-thank-you__jetpack', this.props.planClass ) }>
-				<QueryPluginKeys siteId={ site.ID } />
+				{ site.canUpdateFiles && <QueryPluginKeys siteId={ site.ID } /> }
 				{ this.renderErrorNotice() }
-				{ turnOnManage && this.renderManageNotice() }
+				{ this.renderManageNotice() }
 				<PlanThankYouCard siteId={ site.ID } action={ this.renderAction() } />
-				{ turnOnManage
-					? <FeatureExample>{ this.renderFeatures() }</FeatureExample>
-					: this.renderFeatures()
-				}
+				{ this.renderFeatures() }
 			</div>
 		);
 	}
