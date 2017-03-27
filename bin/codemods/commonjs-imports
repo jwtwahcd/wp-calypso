@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 
 /*
+	This codemod converts `var ... = require( '...' )` to `import ... from '...'`.
+
 	How to use:
 	./bin/codemods/commonjs-imports path-to-transform/
 */
