@@ -79,4 +79,13 @@ module.exports = {
 		},
 		defaultVariation: 'hideSurveyStep',
 	},
+	presaleChatButton: {
+		datestamp: '20170328',
+		variations: {
+			showChatButton: 20,
+			original: 80
+		},
+		defaultVariation: 'original',
+		allowAnyLocale: true,
+	},
 };
