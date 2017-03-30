@@ -4,7 +4,7 @@
 import React, { PropTypes, PureComponent } from 'react';
 import classNames from 'classnames';
 import { localize } from 'i18n-calypso';
-import { includes, map, noop, partial } from 'lodash';
+import { find, includes, map, noop, partial, startsWith } from 'lodash';
 
 /**
  * Internal dependencies
@@ -33,6 +33,7 @@ class LanguageChooserModal extends PureComponent {
 			filter: 'popular',
 			search: false,
 			selectedLanguageSlug: this.props.selected,
+			suggestedLanguages: this.getSuggestedLanguages(),
 		};
 	}
 
@@ -40,6 +41,12 @@ class LanguageChooserModal extends PureComponent {
 		if ( nextProps.selected !== this.props.selected ) {
 			this.setState( {
 				selectedLanguageSlug: nextProps.selected
+			} );
+		}
+
+		if ( nextProps.languages !== this.props.languages ) {
+			this.setState( {
+				suggestedLanguages: this.getSuggestedLanguages()
 			} );
 		}
 	}
@@ -74,6 +81,31 @@ class LanguageChooserModal extends PureComponent {
 			default:
 				return languages;
 		}
+	}
+
+	getSuggestedLanguages() {
+		if ( ! ( 'languages' in navigator ) ) {
+			return null;
+		}
+
+		const { languages } = this.props;
+
+		const suggestedLanguages = [];
+
+		for ( const langSlug of navigator.languages ) {
+			// Find the language first by its full code (e.g. en-US), and when it fails
+			// try only the base code (en). Don't add duplicates.
+			const lcLangSlug = langSlug.toLowerCase();
+			let language = find( languages, lang => lang.langSlug === lcLangSlug );
+			if ( ! language ) {
+				language = find( languages, lang => startsWith( lcLangSlug, lang.langSlug + '-' ) );
+			}
+			if ( language && ! includes( suggestedLanguages, language ) ) {
+				suggestedLanguages.push( language );
+			}
+		}
+
+		return suggestedLanguages;
 	}
 
 	handleSearch = ( search ) => {
@@ -130,6 +162,35 @@ class LanguageChooserModal extends PureComponent {
 		);
 	}
 
+	renderSuggestedLanguages() {
+		const { suggestedLanguages } = this.state;
+		if ( ! suggestedLanguages ) {
+			return null;
+		}
+
+		return (
+			<div className="language-chooser__modal-suggested">
+				<div className="language-chooser__modal-suggested-label">
+					{ this.props.translate( 'Suggested languages: ' ) }
+				</div>
+				{ suggestedLanguages.map( language => {
+					const isSelected = language.langSlug === this.state.selectedLanguageSlug;
+					const classes = classNames( 'language-chooser__modal-text', {
+						'is-selected': isSelected
+					} );
+
+					return (
+						<div
+							key={ language.langSlug }
+							className={ classes }
+							onClick={ partial( this.handleClick, language.langSlug ) }
+						>{ language.name }</div>
+					);
+				} ) }
+			</div>
+		);
+	}
+
 	render() {
 		const { isVisible, translate } = this.props;
 
@@ -147,6 +208,12 @@ class LanguageChooserModal extends PureComponent {
 				onClick: this.handleSelectLanguage
 			},
 		];
+
+		const listClasses = classNames( 'language-chooser__modal-list', {
+			// The language list has a different height when the 'suggested' list
+			// is also present. TODO: rewrite to flex!
+			'has-suggested-languages': this.state.suggestedLanguages
+		} );
 
 		return (
 			<Dialog
@@ -166,9 +233,10 @@ class LanguageChooserModal extends PureComponent {
 						placeholder={ translate( 'Search languages…' ) }
 					/>
 				</SectionNav>
-				<div className="language-chooser__modal-list">
+				<div className={ listClasses }>
 					{ languages.map( language => this.renderLanguageItem( language ) ) }
 				</div>
+				{ this.renderSuggestedLanguages() }
 			</Dialog>
 		);
 	}
