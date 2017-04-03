@@ -14,7 +14,7 @@ import wrapSettingsForm from './wrap-settings-form';
 import Card from 'components/card';
 import CompactCard from 'components/card/compact';
 import Button from 'components/button';
-import LanguageSelector from 'components/forms/language-selector';
+import LanguageChooser from 'components/language-chooser';
 import DisconnectJetpackButton from 'my-sites/plugins/disconnect-jetpack/disconnect-jetpack-button';
 import SectionHeader from 'components/section-header';
 import config from 'config';
@@ -159,7 +159,7 @@ class SiteSettingsFormGeneral extends Component {
 		return (
 			<FormFieldset>
 				<FormLabel htmlFor="lang_id">{ translate( 'Language' ) }</FormLabel>
-				<LanguageSelector
+				<LanguageChooser
 					name="lang_id"
 					id="lang_id"
 					languages={ config( 'languages' ) }
