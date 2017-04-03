@@ -409,7 +409,7 @@ const ThemeSheet = React.createClass( {
 				<li key={ 'theme-features-item-' + item.slug }>
 					{ ! isWpcomTheme
 						? <a>{ item.name }</a>
-						: <a href={ `/design/filter/${ term }/${ siteSlug || '' }` }>{ item.name }</a>
+						: <a href={ `/themes/filter/${ term }/${ siteSlug || '' }` }>{ item.name }</a>
 					}
 				</li>
 			);
@@ -452,7 +452,7 @@ const ThemeSheet = React.createClass( {
 					title={ emptyContentTitle }
 					line={ emptyContentMessage }
 					action={ i18n.translate( 'View the showcase' ) }
-					actionURL="/design"
+					actionURL="/themes"
 				/>
 			</Main>
 		);
