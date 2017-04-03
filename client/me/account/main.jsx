@@ -18,7 +18,7 @@ import { bindActionCreators } from 'redux';
 /**
  * Internal dependencies
  */
-import LanguageSelector from 'components/forms/language-selector';
+import LanguageChooser from 'components/language-chooser';
 import MeSidebarNavigation from 'me/sidebar-navigation';
 import { protectForm } from 'lib/protect-form';
 import formBase from 'me/form-base';
@@ -512,12 +512,9 @@ const Account = React.createClass( {
 
 				<FormFieldset>
 					<FormLabel htmlFor="lang_id">{ translate( 'Interface Language' ) }</FormLabel>
-					<LanguageSelector
-						disabled={ this.getDisabledState() }
-						id="lang_id"
-						languages={ config( 'languages' ) }
+					<LanguageChooser
 						name="lang_id"
-						onFocus={ this.recordFocusEvent( 'Interface Language Field' ) }
+						languages={ config( 'languages' ) }
 						valueKey="langSlug"
 						value={ this.getUserSetting( 'language' ) || '' }
 						onChange={ this.updateLanguage }
