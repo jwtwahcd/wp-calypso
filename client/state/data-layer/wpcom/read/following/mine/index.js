@@ -103,6 +103,5 @@ export function receiveError( store ) {
 
 export default {
 	[ READER_FOLLOWS_SYNC_START ]: [ syncReaderFollows ],
-	[READER_FOLLOWS_SYNC_PAGE]: [dispatchRequest(requestPage, receivePage, receiveError)],
-	[ ]
+	[ READER_FOLLOWS_SYNC_PAGE ]: [ dispatchRequest( requestPage, receivePage, receiveError ) ],
 };
