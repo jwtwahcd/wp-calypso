@@ -1,7 +1,9 @@
 #!/usr/bin/env node
 
 /*
-	This codemod converts `var ... = require( '...' )` to `import ... from '...'`.
+	This codemod converts occurrences of `require( '...' )` to `import ... from '...'`
+	only if they occurr on the top level scope. CommonJS imports inside block statements,
+	like conditionals or function definitions, will not be converted.
 
 	How to use:
 	./bin/codemods/commonjs-imports path-to-transform/
