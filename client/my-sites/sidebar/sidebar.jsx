@@ -405,14 +405,6 @@ export class MySitesSidebar extends Component {
 			return null;
 		}
 
-		if (
-			site.jetpack &&
-			! site.isModuleActive( 'publicize' ) &&
-			( ! site.isModuleActive( 'sharedaddy' ) || site.versionCompare( '3.4-dev', '<' ) )
-		) {
-			return null;
-		}
-
 		if ( site.capabilities && ! site.capabilities.publish_posts ) {
 			return null;
 		}
