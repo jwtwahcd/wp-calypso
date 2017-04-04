@@ -40,13 +40,17 @@ module.exports = React.createClass( {
 			'press-this': 'wordpress',
 			twitter: 'twitter-alt',
 			more: 'share'
-		}
+		};
 		if ( ! this.props.button.custom ) {
 			const icon = shortnameToSocialLogo[ this.props.button.ID ] || this.props.button.shortname;
 
 			return <SocialLogo icon={ icon } size={ 18 } />;
 		} else if ( 'string' === typeof this.props.button.icon ) {
-			return <span className="sharing-buttons-preview-button__custom-icon" style={ { backgroundImage: 'url(' + photon( this.props.button.icon, { width: 16 } ) + ')' } }></span>;
+			return (
+				<span className="buttons__preview-button sharing-buttons-preview-button__custom-icon"
+					style={ { backgroundImage: 'url(' + photon( this.props.button.icon, { width: 16 } ) + ')' } }
+					/>
+			);
 		}
 	},
 
@@ -56,14 +60,17 @@ module.exports = React.createClass( {
 	},
 
 	render: function() {
-		var classes = classNames( 'sharing-buttons-preview-button', 'style-' + this.props.style, 'share-' + this.props.button.ID, {
+		const classes = classNames( 'sharing-buttons-preview-button', 'style-' + this.props.style, 'share-' + this.props.button.ID, {
 			'is-enabled': this.props.enabled,
 			'is-custom': this.props.button.custom
 		} );
 
 		return (
 			<div className={ classes } onClick={ this.onClick } onMouseOver={ this.props.onMouseOver }>
-				{ this.getIcon() }<span className="sharing-buttons-preview-button__service">{ this.props.button.name }</span>
+				{ this.getIcon() }
+				<span className="buttons__preview-button sharing-buttons-preview-button__service">
+					{ this.props.button.name }
+				</span>
 			</div>
 		);
 	}
