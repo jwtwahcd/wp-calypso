@@ -20,6 +20,8 @@ const binArgs = [
 	'-t',
 	'node_modules/5to6-codemod/transforms/exports.js',
 	'--extensions=js,jsx',
+	'--useTabs=true',
+	'--arrayBracketSpacing=true',
 	args[0],
 ];
 const binPath = path.join( '.', 'node_modules', '.bin', 'jscodeshift' )
