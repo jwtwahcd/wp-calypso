@@ -105,7 +105,7 @@ export class SiteSettingsComponent extends Component {
 						<JetpackDevModeNotice />
 					}
 					<SidebarNavigation />
-					{ site && <SiteSettingsNavigation site={ site } section={ section } /> |
+					{ site && <SiteSettingsNavigation site={ site } section={ section } /> }
 					<QueryProductsList />
 					{ site && <QuerySitePurchases siteId={ site.ID } /> }
 					{ site && this.getSection() }
