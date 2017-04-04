@@ -30,6 +30,8 @@ import QueryPluginKeys from 'components/data/query-plugin-keys';
 import analytics from 'lib/analytics';
 import JetpackSite from 'lib/site/jetpack';
 import support from 'lib/url/support';
+import CompactCard from 'components/card/compact';
+import utils from 'lib/site/utils';
 
 // Redux actions & selectors
 import { getSelectedSite, getSelectedSiteId } from 'state/ui/selectors';
@@ -301,7 +303,65 @@ class JetpackThankYouCard extends Component {
 		return features;
 	}
 
-	renderErrorNotice() {
+	renderErrorDetail() {
+		const { translate, selectedSite, plugins } = this.props;
+		if ( ! this.isErrored() ) {
+			return null;
+		}
+
+		const reasons = utils.getSiteFileModDisableReason( selectedSite, 'modifyFiles' );
+		let reason;
+		if ( reasons && reasons.length > 0 ) {
+			reason = reasons[ 0 ];
+			this.trackConfigFinished( 'calypso_plans_autoconfig_error_filemod', { error: reason } );
+		} else if ( ! selectedSite.hasMinimumJetpackVersion ) {
+			reason = translate( 'You need to update your version of Jetpack.' );
+			this.trackConfigFinished( 'calypso_plans_autoconfig_error_jpversion', {
+				jetpack_version: selectedSite.options.jetpack_version
+			} );
+		} else if ( ! selectedSite.isMainNetworkSite() ) {
+			reason = translate( 'We can\'t install plugins on multisite sites.' );
+			this.trackConfigFinished( 'calypso_plans_autoconfig_error_multisite' );
+		} else if ( selectedSite.options.is_multi_network ) {
+			reason = translate( 'We can\'t install plugins on multi-network sites.' );
+			this.trackConfigFinished( 'calypso_plans_autoconfig_error_multinetwork' );
+		}
+
+		const erroredPlugins = ! ( Array.isArray( plugins ) && plugins.length )
+			? [ 'akismet', 'vaultpress' ]
+			: reduce( plugins, ( errored, plugin ) => {
+				if ( 'done' !== plugin.status ) {
+					errored.push( plugin );
+				}
+				return errored;
+			}, [] );
+
+		return (
+			<div className="checkout-thank-you__jetpack-error-card">
+				<CompactCard>
+					<p>{ this.renderErrorNotice( true ) }</p>
+					{ reason }
+				</CompactCard>
+				{
+					<CompactCard compact href={ support.JETPACK_CONTACT_SUPPORT }>
+						{ translate( 'Get Help' ) }
+					</CompactCard>
+				}
+				{ -1 !== erroredPlugins.indexOf( 'akismet' ) &&
+					<CompactCard compact href={ support.JETPACK_SERVICE_AKISMET }>
+						{ translate( 'Manual Instructions for Akismet' ) }
+					</CompactCard>
+				}
+				{ -1 !== erroredPlugins.indexOf( 'vaultpress' ) &&
+					<CompactCard compact href={ support.JETPACK_SERVICE_VAULTPRESS }>
+						{ translate( 'Manual Instructions for VaultPress' ) }
+					</CompactCard>
+				}
+			</div>
+		);
+	}
+
+	renderErrorNotice( isCompact = false ) {
 		const { translate } = this.props;
 		if ( ! this.isErrored() ) {
 			return null;
@@ -313,10 +373,8 @@ class JetpackThankYouCard extends Component {
 				showDismiss={ false }
 				status="is-error"
 				text={ translate( 'We had trouble setting up your plan.' ) }
+				isCompact={ !! isCompact }
 				>
-				<NoticeAction href={ support.JETPACK_CONTACT_SUPPORT }>
-					{ translate( 'Get Help' ) }
-				</NoticeAction>
 			</Notice>
 		);
 	}
@@ -444,10 +502,10 @@ class JetpackThankYouCard extends Component {
 		return (
 			<div className={ classNames( 'checkout-thank-you__jetpack', this.props.planClass ) }>
 				{ site.canUpdateFiles && <QueryPluginKeys siteId={ site.ID } /> }
-				{ this.renderErrorNotice() }
 				{ this.renderManageNotice() }
 				<PlanThankYouCard siteId={ site.ID } action={ this.renderAction() } />
 				{ this.renderFeatures() }
+				{ this.renderErrorDetail() }
 			</div>
 		);
 	}
