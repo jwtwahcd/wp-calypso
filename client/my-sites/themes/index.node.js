@@ -20,6 +20,11 @@ export default function( router ) {
 	const verticals = getSubjects().join( '|' );
 
 	if ( config.isEnabled( 'manage/themes' ) ) {
+		// Interim redirect before this is handled on server route config level
+		router( [ '/design', '/design/*' ], ( { originalUrl, res } ) => {
+			res.redirect( '/themes' + originalUrl.slice( '/design'.length ) );
+		} );
+
 		router( `/themes/:vertical(${ verticals })?/:tier(free|premium)?`, fetchThemeData, loggedOut, makeLayout );
 		router(
 			`/themes/:vertical(${ verticals })?/:tier(free|premium)?/filter/:filter`,
