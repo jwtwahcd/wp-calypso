@@ -14,13 +14,14 @@ import {
 } from 'state/action-types';
 import { http } from 'state/data-layer/wpcom-http/actions';
 import { dispatchRequest } from 'state/data-layer/wpcom-http/utils';
-import { subscribeToNewPostEmails, unsubscribeToNewPostEmails } from 'state/reader/follows/actions';
+import { subscribeToNewPostEmail, unsubscribeToNewPostEmail } from 'state/reader/follows/actions';
 import { errorNotice } from 'state/notices/actions';
 
 function requestPostEmailSubscription( { dispatch }, action, next ) {
 	dispatch( http( {
 		method: 'POST',
 		path: `/read/site/${ action.payload.blogId }/post_email_subscriptions/new`,
+		apiVersion: '1.2',
 		onSuccess: action,
 		onFailure: action,
 	} ) );
@@ -36,7 +37,7 @@ function receivePostEmailSubscription( store, action, next, response ) {
 function receivePostEmailSubscriptionError( { dispatch }, action, next, error ) {
 	dispatch( errorNotice( translate( 'Sorry, we had a problem subscribing. Please try again.' ) ) );
 	// dispatch an unsubscribe
-	next( unsubscribeToNewPostEmails( action.payload.blogId ) );
+	next( unsubscribeToNewPostEmail( action.payload.blogId ) );
 	console.log( error );
 }
 
@@ -44,6 +45,7 @@ function updatePostEmailSubscription( { dispatch }, action, next ) {
 	dispatch( http( {
 		method: 'POST',
 		path: `/read/site/${ action.payload.blogId }/post_email_subscriptions/update`,
+		apiVersion: '1.2',
 		body: omit( action.payload, 'blogId' ),
 		onSuccess: action,
 		onFailure: action,
@@ -64,6 +66,7 @@ function requestPostEmailUnsubscription( { dispatch }, action, next ) {
 	dispatch( http( {
 		method: 'POST',
 		path: `/read/site/${ action.payload.blogId }/post_email_subscriptions/delete`,
+		apiVersion: '1.2',
 		onSuccess: action,
 		onFailure: action,
 	} ) );
@@ -78,7 +81,7 @@ function receivePostEmailUnsubscription( store, action, next, response ) {
 
 function receivePostEmailUnsubscriptionError( { dispatch }, action, next, error ) {
 	dispatch( errorNotice( translate( 'Sorry, we had a problem unsubscribing. Please try again.' ) ) );
-	next( subscribeToNewPostEmails( action.payload.blogId ) );
+	next( subscribeToNewPostEmail( action.payload.blogId ) );
 	console.log( error );
 }
 
