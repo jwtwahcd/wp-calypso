@@ -15,6 +15,7 @@ import {
 	READER_UNSUBSCRIBE_TO_NEW_POST_EMAIL,
 	READER_SUBSCRIBE_TO_NEW_COMMENT_EMAIL,
 	READER_UNSUBSCRIBE_TO_NEW_COMMENT_EMAIL,
+	READER_UPDATE_NEW_POST_EMAIL_SUBSCRIPTION,
 } from 'state/action-types';
 
 /**
@@ -93,6 +94,13 @@ export function unsubscribeToNewPostEmail( blogId ) {
 		payload: {
 			blogId
 		}
+	};
+}
+
+export function updateNewPostEmailSubscription( blogId, options ) {
+	return {
+		type: READER_UPDATE_NEW_POST_EMAIL_SUBSCRIPTION,
+		payload: options
 	};
 }
 
