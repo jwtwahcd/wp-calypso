@@ -295,3 +295,17 @@
 .checkout-thank-you__jetpack-error-card {
 	text-align: left;
 }
+
+.checkout-thank-you__jetpack-error-heading {
+	font-size: 21px;
+	font-weight: 300;
+	line-height: 32px;
+	margin-top: 0;
+}
+
+.checkout-thank-you__jetpack-error-explanation {
+	color: $gray-text-min;
+	font-size: 14px;
+	font-style: italic;
+	font-weight: 400;
+}
