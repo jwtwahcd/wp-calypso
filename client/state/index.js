@@ -60,6 +60,7 @@ import timezones from './timezones/reducer';
 import themes from './themes/reducer';
 import ui from './ui/reducer';
 import users from './users/reducer';
+import userSettings from './user-settings/reducer';
 import wordads from './wordads/reducer';
 import config from 'config';
 
@@ -121,6 +122,7 @@ const reducers = {
 	themes,
 	ui,
 	users,
+	userSettings,
 	wordads,
 };
 
