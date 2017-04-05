@@ -30,6 +30,10 @@ export function isATEnabledForCurrentSite() {
 	if ( get( site, 'options.is_automated_transfer' ) ) {
 		return true;
 	}
+
+	// Disable new transfers
+	return false;
+
 	// If it's wpcalypso, this is open
 	if ( config( 'env_id' ) === 'wpcalypso' ) {
 		return true;
