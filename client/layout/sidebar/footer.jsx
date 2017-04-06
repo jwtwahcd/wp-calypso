@@ -27,7 +27,7 @@ const SidebarFooter = ( { translate, children, isHappychatButtonVisible } ) => (
 		{
 			isHappychatButtonVisible &&
 			config.isEnabled( 'happychat' ) &&
-			<HappychatButton className="sidebar__footer-chat" />
+			<HappychatButton className="sidebar__footer-chat" allowMobileRedirect />
 		}
 	</div>
 );

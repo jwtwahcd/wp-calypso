@@ -23,6 +23,7 @@ import Button from 'components/button';
 
 class HappychatButton extends Component {
 	static propTypes = {
+		allowMobileRedirect: PropTypes.bool,
 		borderless: PropTypes.bool,
 		connectChat: PropTypes.func,
 		isChatActive: PropTypes.bool,
@@ -33,6 +34,7 @@ class HappychatButton extends Component {
 	};
 
 	static defaultProps = {
+		allowMobileRedirect: false,
 		borderless: true,
 		connectChat: noop,
 		isChatActive: false,
@@ -43,7 +45,7 @@ class HappychatButton extends Component {
 	};
 
 	onClick = ( event ) => {
-		if ( viewport.isMobile() ) {
+		if ( this.props.allowMobileRedirect && viewport.isMobile() ) {
 			// For mobile clients, happychat will always use the
 			// page componet instead of the sidebar
 			page( '/me/chat' );
